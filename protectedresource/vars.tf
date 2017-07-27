@@ -4,5 +4,5 @@ variable "resource_name" {
 
 variable "authorizer_name" {
   description = "The name of the authorizer protecting the resource"
-  default = "Authorizer"
+  default = "authorizer"
 }
