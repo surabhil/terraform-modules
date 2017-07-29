@@ -1,7 +1,3 @@
-module "authorizer_lambda" {
-  source = "git::git@github.com:API-market/terraform-modules.git//resourceauthorizer"
-}
-
 resource "aws_api_gateway_authorizer" "authorizer" {
   name                   = "${module.authorizer_lambda.authorizer_name}"
   rest_api_id            = "${aws_api_gateway_rest_api.protectedresource.id}"
