@@ -16,7 +16,7 @@ resource "aws_api_gateway_integration" "unprotectedresource_integration" {
   http_method             = "${aws_api_gateway_method.unprotectedresourceany.http_method}"
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = "arn:aws:apigateway:us-west-1:lambda:path/2015-03-31/functions/${aws_lambda_function.unprotectedresource.arn}/invocations"
+  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${aws_lambda_function.unprotectedresource.arn}/invocations"
 }
 
 resource "aws_api_gateway_method_response" "unprotectedresource_200response" {
