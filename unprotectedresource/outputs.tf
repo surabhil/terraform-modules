@@ -1,3 +1,3 @@
-output "${aws_api_gateway_rest_api.unprotectedresource.name} Lambda Endpoint" {
+output "endpoint_invoke_url" {
   value = "${aws_api_gateway_deployment.unprotectedresource_prod.invoke_url}"
 }

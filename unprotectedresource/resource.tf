@@ -55,6 +55,10 @@ resource "aws_lambda_function" "unprotectedresource" {
   handler          = "${var.resource_name}.handler"
   runtime          = "nodejs6.10"
   source_code_hash = "${base64sha256(file("${var.resource_name}.js.zip"))}"
+
+  environment {
+    variables = "${var.environent_variables}"
+  }
 }
 
 # IAM
