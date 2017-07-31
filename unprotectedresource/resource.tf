@@ -57,7 +57,7 @@ resource "aws_lambda_function" "unprotectedresource" {
   source_code_hash = "${base64sha256(file("${var.resource_name}.js.zip"))}"
 
   environment {
-    variables = "${var.environent_variables}"
+    variables = "${var.environment_variables}"
   }
 }
 
