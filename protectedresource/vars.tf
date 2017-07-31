@@ -4,7 +4,9 @@ variable "resource_name" {
 
 variable "environment_variables" {
   type = "map"
-  default = {}
+  default = {
+    key = "value"
+  }
 }
 
 variable "authorizer_name" {}
