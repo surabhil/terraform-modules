@@ -13,10 +13,13 @@ These modules can be called in other terraform configurations by referencing the
 
     authorizer_name =
             authorizer function name to use to protect the resource
+            (this is a Lambda function, created by the resource-authorizer code)
     authorizer_arn =
             authorizer function arn
     authorizer_invoke_arn =
             authorizer function invoke arn
+
+    (these variables are available in S3, see hello-world-protected-resource for details)
 
     environment_variables (optional) =
             what environment variables (if any) the Lambda function should be instantiated with
