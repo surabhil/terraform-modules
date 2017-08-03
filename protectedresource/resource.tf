@@ -3,6 +3,12 @@ resource "aws_api_gateway_rest_api" "protectedresource" {
   name = "${var.resource_name}"
 }
 
+data "archive_file" "resource_zip" {
+  type        = "zip"
+  source_file = "${var.resource_name}.js"
+  output_path = "${var.resource_name}.js.zip"
+}
+
 resource "aws_api_gateway_method" "protectedresourceany" {
   rest_api_id   = "${aws_api_gateway_rest_api.protectedresource.id}"
   resource_id   = "${aws_api_gateway_rest_api.protectedresource.root_resource_id}"
@@ -55,11 +61,18 @@ resource "aws_lambda_function" "protectedresource" {
   role             = "${aws_iam_role.protectedresource_lambdarole.arn}"
   handler          = "${var.resource_name}.handler"
   runtime          = "nodejs6.10"
-  source_code_hash = "${base64sha256(file(var.file_name))}"
+  source_code_hash = "${base64sha256(file(data.archive_file.resource_zip.output_path))}"
 
   environment {
     variables = "${var.environment_variables}"
   }
+}
+
+resource "aws_s3_bucket_object" "endpoint_invoke_url" {
+  bucket = "${var.config_bucket}"
+  key = "lambdas/${var.resource_name}/endpoint_invoke_url"
+  content = "${aws_api_gateway_deployment.protectedresource_prod.invoke_url}"
+  content_type = "text/plain"
 }
 
 # IAM
