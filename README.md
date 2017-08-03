@@ -2,7 +2,7 @@ This is a collection of Terraform modules that can be used to configure various 
 
 These modules can be called in other terraform configurations by referencing their GitHub source:
 * Protected Resource:
-    ```javascript
+    ```HCL
     module "protectedresource" {
 
     source = "git::git@github.com:API-market/terraform-modules.git//protectedresource"
@@ -23,7 +23,7 @@ These modules can be called in other terraform configurations by referencing the
     ```
 
 * Unprotected Resource:
-    ```javascript
+    ```HCL
     module "unprotectedresource" {
 
     source = "git::git@github.com:API-market/terraform-modules.git//unprotectedresource"
