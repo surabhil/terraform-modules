@@ -8,7 +8,7 @@ These modules can be called in other terraform configurations by referencing the
     source = "git::git@github.com:API-market/terraform-modules.git//protectedresource"
 
     resource_name =
-            name of the resource to be protected
+            name of the resource to be made availabe and protected (must be the filename of the Lambda code)
 
     authorizer_name =
             authorizer function name to use to protect the resource
@@ -30,7 +30,7 @@ These modules can be called in other terraform configurations by referencing the
     source = "git::git@github.com:API-market/terraform-modules.git//unprotectedresource"
 
     resource_name =
-            name of the resource to be protected (must be the filename of the Lambda code)
+            name of the resource to be made available (must be the filename of the Lambda code)
 
     environment_variables (optional) =
             what environment variables (if any) the Lambda function should be instantiated with
