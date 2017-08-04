@@ -1,5 +1,3 @@
-variable "cert_provider" {}
-
 variable "domain" {}
 
 variable "subdomain" {}

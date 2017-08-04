@@ -3,7 +3,7 @@ data "aws_route53_zone" "apimarket-zone" {
 }
 
 data "aws_acm_certificate" "test-cert" {
-  provider = "${var.cert_provider}"
+  provider = "aws.use1"
   domain = "${var.subdomain}.${var.domain}"
   statuses = ["ISSUED"]
 }
