@@ -1,15 +1,9 @@
-provider "aws" {
-  region = "us-east-1"
-  profile = "${var.aws_profile}"
-  alias = "use1"
-}
-
 data "aws_route53_zone" "apimarket-zone" {
   name = "${var.domain}."
 }
 
 data "aws_acm_certificate" "test-cert" {
-  provider = "aws.use1"
+  provider = "${var.cert_provider}"
   domain = "${var.subdomain}.${var.domain}"
   statuses = ["ISSUED"]
 }

@@ -1,4 +1,4 @@
-variable "aws_profile" {}
+variable "cert_provider" {}
 
 variable "domain" {}
 
