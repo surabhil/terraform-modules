@@ -1,8 +1,9 @@
-# API Gateway
+# create a new REST API Gateway
 resource "aws_api_gateway_rest_api" "unprotectedresource" {
   name = "${var.resource_name}"
 }
 
+# create a new method that responds to ANY HTTP method at the root of the REST API
 resource "aws_api_gateway_method" "unprotectedresourceany" {
   rest_api_id   = "${aws_api_gateway_rest_api.unprotectedresource.id}"
   resource_id   = "${aws_api_gateway_rest_api.unprotectedresource.root_resource_id}"
@@ -10,6 +11,7 @@ resource "aws_api_gateway_method" "unprotectedresourceany" {
   authorization = "NONE"
 }
 
+# add a Lambda integration, using the Lambda created in lamdba.tf
 resource "aws_api_gateway_integration" "unprotectedresource_integration" {
   rest_api_id             = "${aws_api_gateway_rest_api.unprotectedresource.id}"
   resource_id             = "${aws_api_gateway_rest_api.unprotectedresource.root_resource_id}"
@@ -19,6 +21,7 @@ resource "aws_api_gateway_integration" "unprotectedresource_integration" {
   uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${aws_lambda_function.unprotectedresource.arn}/invocations"
 }
 
+# create the corresponding response and integration response (if someone could explain this to me that would be great)
 resource "aws_api_gateway_method_response" "unprotectedresource_200response" {
   depends_on = ["aws_api_gateway_integration.unprotectedresource_integration"]
   rest_api_id = "${aws_api_gateway_rest_api.unprotectedresource.id}"
@@ -34,72 +37,17 @@ resource "aws_api_gateway_integration_response" "unprotectedresource_integration
   status_code = "${aws_api_gateway_method_response.unprotectedresource_200response.status_code}"
 }
 
+# deploy the REST API to the prod stage (for now)
 resource "aws_api_gateway_deployment" "unprotectedresource_prod" {
   rest_api_id = "${aws_api_gateway_rest_api.unprotectedresource.id}"
   stage_name  = "prod"
   depends_on = ["aws_api_gateway_method.unprotectedresourceany", "aws_api_gateway_integration.unprotectedresource_integration"]
 }
 
-# Lambda
-resource "aws_lambda_permission" "unprotectedresource_apigw_lambda_permission" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.unprotectedresource.arn}"
-  principal     = "apigateway.amazonaws.com"
-}
-
-resource "aws_lambda_function" "unprotectedresource" {
-  filename         = "${var.resource_name}.js.zip"
-  function_name    = "${var.resource_name}"
-  role             = "${aws_iam_role.unprotectedresource_lambdarole.arn}"
-  handler          = "${var.resource_name}.handler"
-  runtime          = "nodejs6.10"
-  source_code_hash = "${base64sha256(file(var.file_name))}"
-
-  environment {
-    variables = "${var.environment_variables}"
-  }
-}
-
-# IAM
-resource "aws_iam_role" "unprotectedresource_lambdarole" {
-  name = "${var.resource_name}_lambdarole"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "lambda.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_role_policy" "unprotectedresource_lambdarole_policy" {
-  name = "${var.resource_name}_lambdarole_policy"
-  role = "${aws_iam_role.unprotectedresource_lambdarole.id}"
-
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "logs:CreateLogGroup",
-                "logs:CreateLogStream",
-                "logs:PutLogEvents"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-EOF
+# write the endpoint's invoke URL to S3, so it can be used by other APIs in the future
+resource "aws_s3_bucket_object" "githubsignin_endpoint_invoke_url" {
+  bucket = "${var.config_bucket}"
+  key = "lambdas/${var.resource_name}/endpoint_invoke_url"
+  content = "${aws_api_gateway_deployment.unprotectedresource_prod.invoke_url}"
+  content_type = "text/plain"
 }

@@ -13,7 +13,7 @@ resource "aws_api_gateway_method" "protectedresourceany" {
   authorizer_id = "${aws_api_gateway_authorizer.authorizer.id}"
 }
 
-# add a Lambda integration, using the Lambda created below
+# add a Lambda integration, using the Lambda created in lambda.tf
 resource "aws_api_gateway_integration" "protectedresource_integration" {
   rest_api_id             = "${aws_api_gateway_rest_api.protectedresource.id}"
   resource_id             = "${aws_api_gateway_rest_api.protectedresource.root_resource_id}"

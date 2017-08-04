@@ -1,10 +1,8 @@
 variable "aws_region" {}
 
-variable "resource_name" {
-  description = "The name of the resource to be protected"
-}
+variable "config_bucket" {}
 
-variable "file_name" {}
+variable "resource_name" {}
 
 variable "environment_variables" {
   type = "map"
