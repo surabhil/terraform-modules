@@ -23,7 +23,7 @@ resource "aws_api_gateway_integration" "unprotectedresource_integration" {
 
 # create the corresponding response and integration response (if someone could explain this to me that would be great)
 resource "aws_api_gateway_method_response" "unprotectedresource_200response" {
-  depends_on = ["aws_api_gateway_integration.unprotectedresource_integration"]
+  depends_on  = ["aws_api_gateway_integration.unprotectedresource_integration"]
   rest_api_id = "${aws_api_gateway_rest_api.unprotectedresource.id}"
   resource_id = "${aws_api_gateway_method.unprotectedresourceany.resource_id}"
   http_method = "${aws_api_gateway_method.unprotectedresourceany.http_method}"
@@ -41,13 +41,13 @@ resource "aws_api_gateway_integration_response" "unprotectedresource_integration
 resource "aws_api_gateway_deployment" "unprotectedresource_prod" {
   rest_api_id = "${aws_api_gateway_rest_api.unprotectedresource.id}"
   stage_name  = "prod"
-  depends_on = ["aws_api_gateway_method.unprotectedresourceany", "aws_api_gateway_integration.unprotectedresource_integration"]
+  depends_on  = ["aws_api_gateway_method.unprotectedresourceany", "aws_api_gateway_integration.unprotectedresource_integration"]
 }
 
 # write the endpoint's invoke URL to S3, so it can be used by other APIs in the future
 resource "aws_s3_bucket_object" "githubsignin_endpoint_invoke_url" {
-  bucket = "${var.config_bucket}"
-  key = "lambdas/${var.resource_name}/endpoint_invoke_url"
-  content = "${aws_api_gateway_deployment.unprotectedresource_prod.invoke_url}"
+  bucket       = "${var.config_bucket}"
+  key          = "lambdas/${var.resource_name}/endpoint_invoke_url"
+  content      = "${aws_api_gateway_deployment.unprotectedresource_prod.invoke_url}"
   content_type = "text/plain"
 }

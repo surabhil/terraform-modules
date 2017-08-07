@@ -1,19 +1,19 @@
 # get information about the authorizer function from S3
 data "aws_s3_bucket_object" "auth_fn_arn" {
   bucket = "${var.config_bucket}"
-  key = "${var.authorizer_name}/arn"
+  key    = "${var.authorizer_name}/arn"
 }
 
 data "aws_s3_bucket_object" "auth_fn_invoke_arn" {
   bucket = "${var.config_bucket}"
-  key = "${var.authorizer_name}/invoke_arn"
+  key    = "${var.authorizer_name}/invoke_arn"
 }
 
 # create a new custom authorizer on the new API Gateway with the invoke ARN found above
 resource "aws_api_gateway_authorizer" "authorizer" {
-  name                   = "${var.authorizer_name}"
-  rest_api_id            = "${aws_api_gateway_rest_api.protectedresource.id}"
-  authorizer_uri         = "${data.aws_s3_bucket_object.auth_fn_invoke_arn.body}"
+  name                             = "${var.authorizer_name}"
+  rest_api_id                      = "${aws_api_gateway_rest_api.protectedresource.id}"
+  authorizer_uri                   = "${data.aws_s3_bucket_object.auth_fn_invoke_arn.body}"
   authorizer_result_ttl_in_seconds = "0"
 }
 

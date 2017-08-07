@@ -6,6 +6,7 @@ variable "resource_name" {}
 
 variable "environment_variables" {
   type = "map"
+
   default = {
     key = "value"
   }
