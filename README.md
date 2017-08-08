@@ -8,11 +8,11 @@ These modules can be called in other terraform configurations by referencing the
 
     source = "git::git@github.com:API-market/terraform-modules.git//resourceauthorizer"
 
-    config_bucket = 
+    config_bucket =
         name of the bucket to write details of the authorizer function that was created,
         so it can be used in protected resources
 
-    authorizer_name = 
+    authorizer_name =
         name of the authorizer to create
         (must be the filename of the Lambda code)
     }
@@ -24,7 +24,7 @@ These modules can be called in other terraform configurations by referencing the
 
     source = "git::git@github.com:API-market/terraform-modules.git//protectedresource"
 
-    aws_region = 
+    aws_region =
         name of the region in which to create the protected resource
 
     resource_name =
@@ -47,9 +47,9 @@ These modules can be called in other terraform configurations by referencing the
 
     source = "git::git@github.com:API-market/terraform-modules.git//unprotectedresource"
 
-    aws_region = 
+    aws_region =
         name of the region in which to create the protected resource
-    
+
     resource_name =
         name of the resource to be made availabe and protected
         (must be the filename of the Lambda code)
@@ -65,10 +65,10 @@ These modules can be called in other terraform configurations by referencing the
 
     source = "git::git@github.com:API-market/terraform-modules.git//customdomain"
 
-    domain = 
+    domain =
         name of the custom domain to create (for example api.market)
 
-    subdomain = 
+    subdomain =
         name of the subdomain (for example test, to combine into test.api.market)
     }
     ```
