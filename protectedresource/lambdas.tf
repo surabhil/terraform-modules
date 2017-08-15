@@ -3,23 +3,23 @@ data "archive_file" "resource_zips" {
   count = "${length(var.resources)}"
 
   type        = "zip"
-  source_file = "${element(var.resources, count.index).name}.js"
-  output_path = "${element(var.resources, count.index).name}.js.zip"
+  source_file = "${element(var.resources, count.index)["name"]}.js"
+  output_path = "${element(var.resources, count.index)["name"]}.js.zip"
 }
 
 # create a new Lambda function from the zipped file created above
 resource "aws_lambda_function" "protectedresources" {
   count = "${length(var.resources)}"
 
-  filename         = "${element(var.resources, count.index).name}.js.zip"
-  function_name    = "${element(var.resources, count.index).name}"
+  filename         = "${element(var.resources, count.index)["name"]}.js.zip"
+  function_name    = "${element(var.resources, count.index)["name"]}"
   role             = "${element(aws_iam_role.protectedresource_lambdaroles.arn, count.index)}"
-  handler          = "${element(var.resources, count.index).name}.handler"
+  handler          = "${element(var.resources, count.index)["name"]}.handler"
   runtime          = "nodejs6.10"
   source_code_hash = "${base64sha256(file(element(data.archive_file.resource_zips.output_path, count.index)))}"
 
   environment {
-    variables = "${element(var.resources, count.index).environment_variables}"
+    variables = "${element(var.resources, count.index)["environment_variables"]}"
   }
 }
 
@@ -27,7 +27,7 @@ resource "aws_lambda_function" "protectedresources" {
 resource "aws_iam_role" "protectedresource_lambdaroles" {
   count = "${length(var.resources)}"
 
-  name = "${element(var.resources, count.index).name}_lambdarole"
+  name = "${element(var.resources, count.index)["name"]}_lambdarole"
 
   assume_role_policy = <<EOF
 {
@@ -49,7 +49,7 @@ EOF
 resource "aws_iam_role_policy" "protectedresource_lambdarole_policies" {
   count = "${length(var.resources)}"
 
-  name = "${element(var.resources, count.index).name}_lambdarole_policy"
+  name = "${element(var.resources, count.index)["name"]}_lambdarole_policy"
   role = "${element(aws_iam_role.protectedresource_lambdaroles.id, count.index)}"
 
   policy = <<EOF
