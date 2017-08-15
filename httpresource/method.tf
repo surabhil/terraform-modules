@@ -1,5 +1,5 @@
 resource "aws_api_gateway_resource" "rest_resource" {
-  parent_id = "${var.custom_resource_parent_id == "" ? var.rest_api_root_resource_id : var.custom_resource_parent_id }"
+  parent_id = "${var.resource_parent_id == "" ? var.rest_api_root_resource_id : var.resource_parent_id }"
   path_part = "${var.resource_path}"
   rest_api_id = "${var.rest_api_id}"
 }
