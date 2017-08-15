@@ -5,21 +5,23 @@ variable "config_bucket" {}
 variable "api_name" {}
 
 variable "names" {
-  type = list
+  type = "list"
 }
 
-variable "environment_variables" {}
+variable "environment_variables" {
+  type = "list"
+}
 
 variable "paths" {
-  type = list
+  type = "list"
 }
 
 variable "methods" {
-  type = list
+  type = "list"
 }
 
 variable "parent_ids" {
-  type = list
+  type = "list"
 }
 
 variable "authorizer_name" {}
