@@ -1,5 +1,5 @@
 resource "aws_api_gateway_resource" "rest_resource" {
-  parent_id = "${var.resource_parent_id == "" ? var.rest_api_root_resource_id : var.resource_parent_id }"
+  parent_id = "${var.resource_parent_id == "" ? var.rest_api_root_resource_id : var.resource_parent_id}"
   path_part = "${var.resource_path}"
   rest_api_id = "${var.rest_api_id}"
 }
@@ -7,12 +7,12 @@ resource "aws_api_gateway_resource" "rest_resource" {
 resource "aws_api_gateway_method" "http_method" {
   rest_api_id   = "${var.rest_api_id}"
   resource_id   = "${aws_api_gateway_resource.rest_resource.id}"
-  http_method   = "${var.resource_method}"
-  authorization = "${var.authorizer_id == "" ? "NONE" : "CUSTOM" }"
+  http_method   = "${var.resource_method == "" ? "ANY" : var.resource_method}"
+  authorization = "${var.authorizer_id == "" ? "NONE" : "CUSTOM"}"
   authorizer_id = "${var.authorizer_id}"
 }
 
-# add a Lambda integration, using the Lambda created in lambda.tf
+# add a Lambda integration, using the Lambda created in lambdas.tf
 resource "aws_api_gateway_integration" "protectedresource_integration" {
   rest_api_id             = "${var.rest_api_id}"
   resource_id             = "${aws_api_gateway_resource.rest_resource.id}"

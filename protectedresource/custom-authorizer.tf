@@ -19,7 +19,7 @@ resource "aws_api_gateway_authorizer" "authorizer" {
 
 # allow this custom authorizer to be called from API Gateway to authorize incoming requests
 resource "aws_iam_role" "authorizer_invocation_role" {
-  name = "api_gateway_${var.resource_name}_invocation"
+  name = "api_gateway_${var.api_name}_invocation"
   path = "/"
 
   assume_role_policy = <<EOF
@@ -40,7 +40,7 @@ EOF
 }
 
 resource "aws_iam_role_policy" "authorizer_invocation_policy" {
-  name = "api_gateway_${var.resource_name}_invocation_policy"
+  name = "api_gateway_${var.api_name}_invocation_policy"
   role = "${aws_iam_role.authorizer_invocation_role.id}"
 
   policy = <<EOF
