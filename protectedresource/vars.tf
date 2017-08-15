@@ -4,7 +4,9 @@ variable "config_bucket" {}
 
 variable "api_name" {}
 
-variable "resources" {}
+variable "resources" {
+  type = list
+}
 
 variable "authorizer_name" {}
 
