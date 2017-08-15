@@ -76,11 +76,3 @@ resource "aws_iam_role_policy" "authorizer_lambdarole_policy" {
 }
 EOF
 }
-
-#  allow API Gateway to execute the Lambda function
-resource "aws_lambda_permission" "authorizer_apigw_lambda_permission" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.authorizer.arn}"
-  principal     = "apigateway.amazonaws.com"
-}

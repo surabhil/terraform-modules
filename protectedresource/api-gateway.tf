@@ -3,47 +3,35 @@ resource "aws_api_gateway_rest_api" "protectedresource" {
   name = "${var.resource_name}"
 }
 
-# create a new method that responds to ANY HTTP method at the root of the REST API
-# add a custom authorization, using the authorizer created in custom-authorizer.tf
-resource "aws_api_gateway_method" "protectedresourceany" {
-  rest_api_id   = "${aws_api_gateway_rest_api.protectedresource.id}"
-  resource_id   = "${aws_api_gateway_rest_api.protectedresource.root_resource_id}"
-  http_method   = "ANY"
-  authorization = "CUSTOM"
+module "http_method" {
+  source = "../httpresource"
+
+  aws_region = "${var.aws_region}"
+
+  rest_api_id = "${aws_api_gateway_rest_api.protectedresource.id}"
+
+  rest_api_root_resource_id = "${aws_api_gateway_rest_api.protectedresource.root_resource_id}"
+
   authorizer_id = "${aws_api_gateway_authorizer.authorizer.id}"
+
+  resource_lambda_arn = "${aws_lambda_function.protectedresource.arn}"
+
+  resource_path = "${var.resource_path}"
 }
 
-# add a Lambda integration, using the Lambda created in lambda.tf
-resource "aws_api_gateway_integration" "protectedresource_integration" {
-  rest_api_id             = "${aws_api_gateway_rest_api.protectedresource.id}"
-  resource_id             = "${aws_api_gateway_rest_api.protectedresource.root_resource_id}"
-  http_method             = "${aws_api_gateway_method.protectedresourceany.http_method}"
-  integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${aws_lambda_function.protectedresource.arn}/invocations"
-}
-
-# create the corresponding response and integration response (if someone could explain this to me that would be great)
-resource "aws_api_gateway_method_response" "protectedresource_200response" {
-  depends_on  = ["aws_api_gateway_integration.protectedresource_integration"]
-  rest_api_id = "${aws_api_gateway_rest_api.protectedresource.id}"
-  resource_id = "${aws_api_gateway_method.protectedresourceany.resource_id}"
-  http_method = "${aws_api_gateway_method.protectedresourceany.http_method}"
-  status_code = "200"
-}
-
-resource "aws_api_gateway_integration_response" "protectedresource_integrationresponse" {
-  rest_api_id = "${aws_api_gateway_rest_api.protectedresource.id}"
-  resource_id = "${aws_api_gateway_method.protectedresourceany.resource_id}"
-  http_method = "${aws_api_gateway_method.protectedresourceany.http_method}"
-  status_code = "${aws_api_gateway_method_response.protectedresource_200response.status_code}"
+#  allow API Gateway to execute the Lambda function
+resource "aws_lambda_permission" "protectedresource_apigw_lambda_permission" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.protectedresource.arn}"
+  principal     = "apigateway.amazonaws.com"
 }
 
 # deploy the REST API to the prod stage (for now)
 resource "aws_api_gateway_deployment" "protectedresource_prod" {
   rest_api_id = "${aws_api_gateway_rest_api.protectedresource.id}"
   stage_name  = "prod"
-  depends_on  = ["aws_api_gateway_method.protectedresourceany", "aws_api_gateway_integration.protectedresource_integration"]
+  depends_on  = ["module.http_method"]
 }
 
 # write the endpoint's invoke URL to S3, so it can be used by other APIs in the future
