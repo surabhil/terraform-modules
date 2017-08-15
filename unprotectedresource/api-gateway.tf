@@ -33,7 +33,7 @@ resource "aws_lambda_permission" "unprotectedresource_apigw_lambda_permission" {
 resource "aws_api_gateway_deployment" "unprotectedresource_prod" {
   rest_api_id = "${aws_api_gateway_rest_api.unprotectedresource.id}"
   stage_name  = "prod"
-  depends_on  = ["aws_api_gateway_method.unprotectedresourceany", "aws_api_gateway_integration.unprotectedresource_integration"]
+  depends_on  = ["module.http_method"]
 }
 
 # write the endpoint's invoke URL to S3, so it can be used by other APIs in the future
