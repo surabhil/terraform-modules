@@ -39,7 +39,7 @@ resource "aws_api_gateway_deployment" "protectedresource_prod" {
 }
 
 # write the endpoint's invoke URL to S3, so it can be used by other APIs in the future
-resource "aws_s3_bucket_object" "endpoint_invoke_url" {
+resource "aws_s3_bucket_object" "protectedresource_endpoint_invoke_url" {
   bucket       = "${var.config_bucket}"
   key          = "lambdas/${var.resource_name}/endpoint_invoke_url"
   content      = "${aws_api_gateway_deployment.protectedresource_prod.invoke_url}"
