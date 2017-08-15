@@ -1,33 +1,33 @@
 # zip up the provided Javascript code to deploy to Lambda
 data "archive_file" "resource_zips" {
-  count = "${length(var.resources)}"
+  count = "${length(var.names)}"
 
   type        = "zip"
-  source_file = "${element(var.resources, count.index)["name"]}.js"
-  output_path = "${element(var.resources, count.index)["name"]}.js.zip"
+  source_file = "${element(var.names, count.index)}.js"
+  output_path = "${element(var.names, count.index)}.js.zip"
 }
 
 # create a new Lambda function from the zipped file created above
 resource "aws_lambda_function" "protectedresources" {
-  count = "${length(var.resources)}"
+  count = "${length(var.names)}"
 
-  filename         = "${element(var.resources, count.index)["name"]}.js.zip"
-  function_name    = "${element(var.resources, count.index)["name"]}"
+  filename         = "${element(var.names, count.index)}.js.zip"
+  function_name    = "${element(var.names, count.index)}"
   role             = "${element(aws_iam_role.protectedresource_lambdaroles.arn, count.index)}"
-  handler          = "${element(var.resources, count.index)["name"]}.handler"
+  handler          = "${element(var.names, count.index)}.handler"
   runtime          = "nodejs6.10"
   source_code_hash = "${base64sha256(file(element(data.archive_file.resource_zips.output_path, count.index)))}"
 
   environment {
-    variables = "${element(var.resources, count.index)["environment_variables"]}"
+    variables = "${element(var.environment_variables, count.index)}"
   }
 }
 
 # IAM role & policy for the Lambda function (allow it to write to CloudWatch)
 resource "aws_iam_role" "protectedresource_lambdaroles" {
-  count = "${length(var.resources)}"
+  count = "${length(var.names)}"
 
-  name = "${element(var.resources, count.index)["name"]}_lambdarole"
+  name = "${element(var.names, count.index)}_lambdarole"
 
   assume_role_policy = <<EOF
 {
@@ -47,9 +47,9 @@ EOF
 }
 
 resource "aws_iam_role_policy" "protectedresource_lambdarole_policies" {
-  count = "${length(var.resources)}"
+  count = "${length(var.names)}"
 
-  name = "${element(var.resources, count.index)["name"]}_lambdarole_policy"
+  name = "${element(var.names, count.index)}_lambdarole_policy"
   role = "${element(aws_iam_role.protectedresource_lambdaroles.id, count.index)}"
 
   policy = <<EOF
