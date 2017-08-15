@@ -16,10 +16,10 @@ variable "environment_variables" {
   }
 }
 
-variable "custom_resource_parent_boolean" {
-  default = false
+variable "resource_method" {
+  default = "ANY"
 }
 
-variable "custom_resource_parent_id" {
-  default = "noparent"
+variable "resource_parent_id" {
+  default = ""
 }

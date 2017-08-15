@@ -12,10 +12,6 @@ variable "resource_lambda_arn" {}
 
 variable "resource_path" {}
 
-variable "resource_method" {
-  default = "ANY"
-}
+variable "resource_method" {}
 
-variable "custom_resource_parent_id" {
-  default = ""
-}
+variable "resource_parent_id" {}

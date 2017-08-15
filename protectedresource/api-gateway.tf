@@ -17,6 +17,10 @@ module "http_method" {
   resource_lambda_arn = "${aws_lambda_function.protectedresource.arn}"
 
   resource_path = "${var.resource_path}"
+
+  resource_method = "${var.resource_method}"
+
+  resource_parent_id = "${var.resource_parent_id}"
 }
 
 #  allow API Gateway to execute the Lambda function
