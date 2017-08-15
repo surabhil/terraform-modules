@@ -31,7 +31,7 @@ resource "aws_lambda_permission" "protectedresource_apigw_lambda_permission" {
 
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = "${element(aws_lambda_function.protectedresources.arn, count.index}"
+  function_name = "${element(aws_lambda_function.protectedresources.arn, count.index)}"
   principal     = "apigateway.amazonaws.com"
 }
 
