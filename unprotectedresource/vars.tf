@@ -9,9 +9,7 @@ variable "resource_path" {}
 variable "environment_variables" {
   type = "map"
 
-  default = {
-    key = "value"
-  }
+  default = {}
 }
 
 variable "resource_method" {
