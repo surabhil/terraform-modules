@@ -37,7 +37,7 @@ resource "aws_api_gateway_integration" "protectedresource_integrations" {
 resource "aws_api_gateway_method_response" "protectedresource_responses" {
   count = "${length(var.names)}"
 
-  depends_on  = ["aws_api_gateway_integration.protectedresource_integration"]
+  depends_on  = ["aws_api_gateway_integration.protectedresource_integrations"]
   rest_api_id = "${aws_api_gateway_rest_api.protectedresource.id}"
   resource_id = "${element(aws_api_gateway_method.http_methods.resource_id, count.index)}"
   http_method = "${element(aws_api_gateway_method.http_methods.http_method, count.index)}"
