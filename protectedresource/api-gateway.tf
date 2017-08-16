@@ -16,7 +16,7 @@ resource "aws_api_gateway_method" "http_methods" {
 
   rest_api_id   = "${aws_api_gateway_rest_api.protectedresource.id}"
   resource_id   = "${element(aws_api_gateway_resource.rest_resources.id, count.index)}"
-  http_method   = "${element(var.names, count.index) == "" ? "ANY" : element(var.names, count.index)}"
+  http_method   = "${element(var.methods, count.index) == "" ? "ANY" : element(var.names, count.index)}"
   authorization = "CUSTOM"
   authorizer_id = "${aws_api_gateway_authorizer.authorizer.id}"
 }
