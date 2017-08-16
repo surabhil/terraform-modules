@@ -18,9 +18,9 @@ resource "aws_lambda_function" "protectedresources" {
   runtime          = "nodejs6.10"
   source_code_hash = "${base64sha256(file(element(data.archive_file.resource_zips.output_path, count.index)))}"
 
-  environment {
-    variables = "${element(var.environment_variables, count.index)}"
-  }
+//  environment {
+//    variables = "${element(var.environment_variables, count.index)}"
+//  }
 }
 
 # IAM role & policy for the Lambda function (allow it to write to CloudWatch)

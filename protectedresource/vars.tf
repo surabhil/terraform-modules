@@ -8,9 +8,9 @@ variable "names" {
   type = "list"
 }
 
-variable "environment_variables" {
-  type = "list"
-}
+//variable "environment_variables" {
+//  type = "list"
+//}
 
 variable "paths" {
   type = "list"
