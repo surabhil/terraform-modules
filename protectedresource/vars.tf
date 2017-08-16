@@ -8,10 +8,6 @@ variable "names" {
   type = "list"
 }
 
-//variable "environment_variables" {
-//  type = "list"
-//}
-
 variable "paths" {
   type = "list"
 }
@@ -26,12 +22,12 @@ variable "parent_ids" {
 
 variable "authorizer_name" {}
 
-//variable "environment_variables" {
-//  type = "map"
-//
-//  default = {}
-//}
-//
+variable "environment_variables" {
+  type = "map"
+
+  default = {}
+}
+
 //variable "resource_method" {
 //  default = "ANY"
 //}

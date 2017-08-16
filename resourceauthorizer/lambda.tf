@@ -19,6 +19,14 @@ resource "aws_lambda_function" "authorizer" {
   }
 }
 
+#  allow API Gateway to execute the Lambda function
+resource "aws_lambda_permission" "authorizer_apigw_lambda_permission" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.authorizer.arn}"
+  principal     = "apigateway.amazonaws.com"
+}
+
 # write authorizer Lambda arn & invoke arn to S3, for use in protected resources
 resource "aws_s3_bucket_object" "auth_fn_arn" {
   bucket       = "${var.config_bucket}"

@@ -13,10 +13,10 @@ resource "aws_lambda_function" "protectedresources" {
 
   filename         = "${element(var.names, count.index)}.js.zip"
   function_name    = "${element(var.names, count.index)}"
-  role             = "${element(aws_iam_role.protectedresource_lambdaroles.arn, count.index)}"
+  role             = "${element(aws_iam_role.protectedresource_lambdaroles.*.arn, count.index)}"
   handler          = "${element(var.names, count.index)}.handler"
   runtime          = "nodejs6.10"
-  source_code_hash = "${base64sha256(file(element(data.archive_file.resource_zips.output_path, count.index)))}"
+  source_code_hash = "${base64sha256(file(element(data.archive_file.resource_zips.*.output_path, count.index)))}"
 
 //  environment {
 //    variables = "${element(var.environment_variables, count.index)}"
@@ -50,7 +50,7 @@ resource "aws_iam_role_policy" "protectedresource_lambdarole_policies" {
   count = "${length(var.names)}"
 
   name = "${element(var.names, count.index)}_lambdarole_policy"
-  role = "${element(aws_iam_role.protectedresource_lambdaroles.id, count.index)}"
+  role = "${element(aws_iam_role.protectedresource_lambdaroles.*.id, count.index)}"
 
   policy = <<EOF
 {

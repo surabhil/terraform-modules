@@ -15,7 +15,7 @@ resource "aws_api_gateway_method" "http_methods" {
   count = "${length(var.names)}"
 
   rest_api_id   = "${aws_api_gateway_rest_api.protectedresource.id}"
-  resource_id   = "${element(aws_api_gateway_resource.rest_resources.id, count.index)}"
+  resource_id   = "${element(aws_api_gateway_resource.rest_resources.*.id, count.index)}"
   http_method   = "${element(var.methods, count.index) == "" ? "ANY" : element(var.names, count.index)}"
   authorization = "CUSTOM"
   authorizer_id = "${aws_api_gateway_authorizer.authorizer.id}"
@@ -26,11 +26,11 @@ resource "aws_api_gateway_integration" "protectedresource_integrations" {
   count = "${length(var.names)}"
 
   rest_api_id             = "${aws_api_gateway_rest_api.protectedresource.id}"
-  resource_id             = "${element(aws_api_gateway_resource.rest_resources.id, count.index)}"
-  http_method             = "${element(aws_api_gateway_method.http_methods.http_method, count.index)}"
+  resource_id             = "${element(aws_api_gateway_resource.rest_resources.*.id, count.index)}"
+  http_method             = "${element(aws_api_gateway_method.http_methods.*.http_method, count.index)}"
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${element(aws_lambda_function.protectedresources.arn, count.index)}/invocations"
+  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/${element(aws_lambda_function.protectedresources.*.arn, count.index)}/invocations"
 }
 
 # create the corresponding response and integration response (if someone could explain this to me that would be great)
@@ -39,8 +39,8 @@ resource "aws_api_gateway_method_response" "protectedresource_responses" {
 
   depends_on  = ["aws_api_gateway_integration.protectedresource_integrations"]
   rest_api_id = "${aws_api_gateway_rest_api.protectedresource.id}"
-  resource_id = "${element(aws_api_gateway_method.http_methods.resource_id, count.index)}"
-  http_method = "${element(aws_api_gateway_method.http_methods.http_method, count.index)}"
+  resource_id = "${element(aws_api_gateway_method.http_methods.*.resource_id, count.index)}"
+  http_method = "${element(aws_api_gateway_method.http_methods.*.http_method, count.index)}"
   status_code = "200"
 }
 
@@ -48,9 +48,9 @@ resource "aws_api_gateway_integration_response" "protectedresource_integrationre
   count = "${length(var.names)}"
 
   rest_api_id = "${aws_api_gateway_rest_api.protectedresource.id}"
-  resource_id = "${element(aws_api_gateway_method.http_methods.resource_id, count.index)}"
-  http_method = "${element(aws_api_gateway_method.http_methods.http_method, count.index)}"
-  status_code = "${element(aws_api_gateway_method_response.protectedresource_responses.status_code, count.index)}"
+  resource_id = "${element(aws_api_gateway_method.http_methods.*.resource_id, count.index)}"
+  http_method = "${element(aws_api_gateway_method.http_methods.*.http_method, count.index)}"
+  status_code = "${element(aws_api_gateway_method_response.protectedresource_responses.*.status_code, count.index)}"
 }
 
 #  allow API Gateway to execute the Lambda functions
@@ -59,7 +59,7 @@ resource "aws_lambda_permission" "protectedresource_apigw_lambda_permission" {
 
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = "${element(aws_lambda_function.protectedresources.arn, count.index)}"
+  function_name = "${element(aws_lambda_function.protectedresources.*.arn, count.index)}"
   principal     = "apigateway.amazonaws.com"
 }
 
