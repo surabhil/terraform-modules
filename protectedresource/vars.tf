@@ -8,6 +8,12 @@ variable "resource_path" {}
 
 variable "authorizer_name" {}
 
+variable "request_parameters" {
+  type = "map"
+
+  default = {}
+}
+
 variable "environment_variables" {
   type = "map"
 

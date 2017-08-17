@@ -8,6 +8,8 @@ variable "authorizer_id" {
   default = ""
 }
 
+variable "request_parameters" {}
+
 variable "resource_lambda_arn" {}
 
 variable "resource_path" {}
