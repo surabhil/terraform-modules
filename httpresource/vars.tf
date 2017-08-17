@@ -8,7 +8,9 @@ variable "authorizer_id" {
   default = ""
 }
 
-variable "request_parameters" {}
+variable "request_parameters" {
+  type = "map"
+}
 
 variable "resource_lambda_arn" {}
 
