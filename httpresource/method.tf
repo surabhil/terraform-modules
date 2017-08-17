@@ -10,8 +10,6 @@ resource "aws_api_gateway_method" "http_method" {
   http_method   = "${var.resource_method}"
   authorization = "${var.authorizer_id == "" ? "NONE" : "CUSTOM" }"
   authorizer_id = "${var.authorizer_id}"
-
-  request_parameters = "${var.request_parameters}"
 }
 
 # add a Lambda integration, using the Lambda created in lambda.tf

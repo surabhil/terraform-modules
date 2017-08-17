@@ -19,8 +19,6 @@ module "http_method" {
   resource_method = "${var.resource_method}"
 
   resource_parent_id = "${var.resource_parent_id}"
-
-  request_parameters = "${var.request_parameters}"
 }
 
 #  allow API Gateway to execute the Lambda function

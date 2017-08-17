@@ -34,6 +34,14 @@ resource "aws_s3_bucket_object" "auth_fn_invoke_arn" {
   content_type = "text/plain"
 }
 
+#  allow API Gateway to execute the Lambda function
+resource "aws_lambda_permission" "authorizer_apigw_lambda_permission" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.authorizer.arn}"
+  principal     = "apigateway.amazonaws.com"
+}
+
 # IAM role & policy for the Lambda function (allow it to write to CloudWatch)
 resource "aws_iam_role" "authorizer_lambdarole" {
   name = "${var.authorizer_name}_lambdarole"

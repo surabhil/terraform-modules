@@ -6,16 +6,12 @@ variable "resource_name" {}
 
 variable "resource_path" {}
 
-variable "request_parameters" {
-  type = "map"
-
-  default = {}
-}
-
 variable "environment_variables" {
   type = "map"
 
-  default = {}
+  default = {
+    key = "value"
+  }
 }
 
 variable "resource_method" {
