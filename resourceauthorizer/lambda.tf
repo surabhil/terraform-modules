@@ -1,16 +1,16 @@
 # zip up the provided Javascript code to deploy to Lambda
 data "archive_file" "authorizer_zip" {
   type        = "zip"
-  source_file = "${var.authorizer_name}.js"
-  output_path = "${var.authorizer_name}.js.zip"
+  source_file = "${var.authorizer_filename}.js"
+  output_path = "${var.authorizer_filename}.js.zip"
 }
 
 # create a new Lambda function from the zipped file created above
 resource "aws_lambda_function" "authorizer" {
-  filename         = "${var.authorizer_name}.js.zip"
+  filename         = "${var.authorizer_filename}.js.zip"
   function_name    = "${var.authorizer_name}"
   role             = "${aws_iam_role.authorizer_lambdarole.arn}"
-  handler          = "${var.authorizer_name}.handler"
+  handler          = "${var.authorizer_filename}.handler"
   runtime          = "nodejs6.10"
   source_code_hash = "${base64sha256(file(data.archive_file.authorizer_zip.output_path))}"
 
