@@ -11,7 +11,6 @@ variable "authorizer_name" {}
 variable "environment_variables" {
   type = "map"
 
-  # these are dummy variables
   default = {
     key = "value"
   }
