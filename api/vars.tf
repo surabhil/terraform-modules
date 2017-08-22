@@ -20,18 +20,22 @@ variable "parent_ids" {
   type = "list"
 }
 
-variable "authorizer_name" {}
+variable "authorization" {
+  type = "list"
+}
 
 variable "environment_variables" {
   type = "map"
 
-  default = {}
+  default = {
+    key = "value"
+  }
 }
 
-//variable "resource_method" {
-//  default = "ANY"
-//}
-//
-//variable "resource_parent_id" {
-//  default = ""
-//}
+variable "auth_environment_variables" {
+  type = "map"
+
+  default = {
+    key = "value"
+  }
+}

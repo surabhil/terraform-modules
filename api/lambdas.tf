@@ -18,9 +18,19 @@ resource "aws_lambda_function" "protectedresources" {
   runtime          = "nodejs6.10"
   source_code_hash = "${base64sha256(file(element(data.archive_file.resource_zips.*.output_path, count.index)))}"
 
-//  environment {
-//    variables = "${element(var.environment_variables, count.index)}"
-//  }
+  environment {
+    variables = "${var.environment_variables}"
+  }
+}
+
+#  allow API Gateway to execute the Lambda functions
+resource "aws_lambda_permission" "protectedresource_apigw_lambda_permissions" {
+  count = "${length(var.names)}"
+
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = "${element(aws_lambda_function.protectedresources.*.arn, count.index)}"
+  principal     = "apigateway.amazonaws.com"
 }
 
 # IAM role & policy for the Lambda function (allow it to write to CloudWatch)

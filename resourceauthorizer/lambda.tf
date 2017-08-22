@@ -27,21 +27,6 @@ resource "aws_lambda_permission" "authorizer_apigw_lambda_permission" {
   principal     = "apigateway.amazonaws.com"
 }
 
-# write authorizer Lambda arn & invoke arn to S3, for use in protected resources
-resource "aws_s3_bucket_object" "auth_fn_arn" {
-  bucket       = "${var.config_bucket}"
-  key          = "${var.authorizer_name}/arn"
-  content      = "${aws_lambda_function.authorizer.arn}"
-  content_type = "text/plain"
-}
-
-resource "aws_s3_bucket_object" "auth_fn_invoke_arn" {
-  bucket       = "${var.config_bucket}"
-  key          = "${var.authorizer_name}/invoke_arn"
-  content      = "${aws_lambda_function.authorizer.invoke_arn}"
-  content_type = "text/plain"
-}
-
 # IAM role & policy for the Lambda function (allow it to write to CloudWatch)
 resource "aws_iam_role" "authorizer_lambdarole" {
   name = "${var.authorizer_name}_lambdarole"
