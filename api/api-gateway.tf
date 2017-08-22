@@ -1,10 +1,10 @@
 # create a new REST API Gateway
 resource "aws_api_gateway_rest_api" "protectedresource" {
-  name = "${var.resource_name}"
+  name = "${var.api_name}"
 }
 
-module "http_method" {
-  source = "../httpresource"
+module "http_resources" {
+  source = "../httpresources"
 
   aws_region = "${var.aws_region}"
 
@@ -14,34 +14,30 @@ module "http_method" {
 
   authorizer_id = "${aws_api_gateway_authorizer.authorizer.id}"
 
-  resource_lambda_arn = "${aws_lambda_function.protectedresource.arn}"
+  names = "${var.names}"
 
-  resource_path = "${var.resource_path}"
+  paths = "${var.paths}"
 
-  resource_method = "${var.resource_method}"
+  methods = "${var.methods}"
 
-  resource_parent_id = "${var.resource_parent_id}"
-}
+  parent_ids = "${var.parent_ids}"
 
-#  allow API Gateway to execute the Lambda function
-resource "aws_lambda_permission" "protectedresource_apigw_lambda_permission" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = "${aws_lambda_function.protectedresource.arn}"
-  principal     = "apigateway.amazonaws.com"
+  authorization = "${var.authorization}"
+
+  lambda_arns = "${aws_lambda_function.protectedresources.*.arn}"
 }
 
 # deploy the REST API to the prod stage (for now)
 resource "aws_api_gateway_deployment" "protectedresource_prod" {
   rest_api_id = "${aws_api_gateway_rest_api.protectedresource.id}"
   stage_name  = "prod"
-  depends_on  = ["module.http_method"]
+  depends_on  = ["module.http_resourcers"]
 }
 
 # write the endpoint's invoke URL to S3, so it can be used by other APIs in the future
 resource "aws_s3_bucket_object" "protectedresource_endpoint_invoke_url" {
   bucket       = "${var.config_bucket}"
-  key          = "lambdas/${var.resource_name}/endpoint_invoke_url"
+  key          = "lambdas/${var.api_name}/endpoint_invoke_url"
   content      = "${aws_api_gateway_deployment.protectedresource_prod.invoke_url}"
   content_type = "text/plain"
 }
