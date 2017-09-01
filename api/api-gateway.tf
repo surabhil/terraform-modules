@@ -5,6 +5,7 @@ resource "aws_api_gateway_rest_api" "api" {
 
 module "http_resources" {
   source = "../http-resources"
+
   aws_region = "${var.aws_region}"
 
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
@@ -18,8 +19,6 @@ module "http_resources" {
   paths = "${var.paths}"
 
   methods = "${var.methods}"
-
-  parent_ids = "${var.parent_ids}"
 
   validations = "${var.validations}"
 

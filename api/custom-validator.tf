@@ -1,4 +1,4 @@
-# get information about the authorizer function from S3
+# get all requested authorizer public keys from S3
 data aws_s3_bucket_object "auth_public_keys"{
   count = "${length(var.authorizers)}"
 

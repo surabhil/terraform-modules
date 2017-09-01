@@ -20,6 +20,8 @@ variable "methods" {
 
 variable "parent_ids" {
   type = "list"
+
+  default = [""]
 }
 
 variable "validations" {

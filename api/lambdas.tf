@@ -7,7 +7,7 @@ data "archive_file" "lambda_zips" {
   output_path = "${element(var.names, count.index)}.js.zip"
 }
 
-# create a new Lambda function from the zipped file created above
+# create new Lambda functions from the zipped files created above
 resource "aws_lambda_function" "lambdas" {
   count = "${length(var.names)}"
 
@@ -33,7 +33,7 @@ resource "aws_lambda_permission" "apigw_lambda_permissions" {
   principal     = "apigateway.amazonaws.com"
 }
 
-# IAM role & policy for the Lambda function (allow it to write to CloudWatch)
+# IAM role & policy for the Lambda functions (allow them to write to CloudWatch)
 resource "aws_iam_role" "apigw_lambda_roles" {
   count = "${length(var.names)}"
 
