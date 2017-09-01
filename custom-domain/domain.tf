@@ -1,8 +1,8 @@
-data "aws_route53_zone" "apimarket-zone" {
+data "aws_route53_zone" "route53_zone" {
   name = "${var.domain}."
 }
 
-data "aws_acm_certificate" "api_gateway_domain_cert" {
+data "aws_acm_certificate" "aws_domain_cert" {
   provider = "aws.use1"
   domain   = "${var.subdomain}.${var.domain}"
   statuses = ["ISSUED"]
@@ -10,11 +10,11 @@ data "aws_acm_certificate" "api_gateway_domain_cert" {
 
 resource "aws_api_gateway_domain_name" "api_gateway_domain" {
   domain_name     = "${var.subdomain}.${var.domain}"
-  certificate_arn = "${data.aws_acm_certificate.api_gateway_domain_cert.arn}"
+  certificate_arn = "${data.aws_acm_certificate.aws_domain_cert.arn}"
 }
 
 resource "aws_route53_record" "cloudwatch_record" {
-  zone_id = "${data.aws_route53_zone.apimarket-zone.zone_id}"
+  zone_id = "${data.aws_route53_zone.route53_zone.zone_id}"
 
   name = "${aws_api_gateway_domain_name.api_gateway_domain.domain_name}"
   type = "A"

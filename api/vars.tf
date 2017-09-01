@@ -4,6 +4,10 @@ variable "config_bucket" {}
 
 variable "api_name" {}
 
+variable "authorizers" {
+  type = "list"
+}
+
 variable "names" {
   type = "list"
 }
@@ -18,9 +22,11 @@ variable "methods" {
 
 variable "parent_ids" {
   type = "list"
+
+  default = []
 }
 
-variable "authorization" {
+variable "validations" {
   type = "list"
 }
 
@@ -32,7 +38,7 @@ variable "environment_variables" {
   }
 }
 
-variable "auth_environment_variables" {
+variable "validator_environment_variables" {
   type = "map"
 
   default = {

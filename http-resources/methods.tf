@@ -11,9 +11,9 @@ resource "aws_api_gateway_method" "http_methods" {
 
   rest_api_id   = "${var.rest_api_id}"
   resource_id   = "${element(aws_api_gateway_resource.rest_resources.*.id, count.index)}"
-  http_method   = "${element(var.methods, count.index) == "" ? "ANY" : element(var.names, count.index)}"
-  authorization = "${element(var.authorization, count.index)}"
-  authorizer_id = "${element(var.authorization, count.index) == "CUSTOM" ? var.authorizer_id : ""}"
+  http_method   = "${element(var.methods, count.index) == "" ? "ANY" : element(var.methods, count.index)}"
+  authorization = "${element(var.validations, count.index)}"
+  authorizer_id = "${element(var.validations, count.index) == "CUSTOM" ? var.validator_id : ""}"
 }
 
 # add a Lambda integration, using the Lambda created in lambdas.tf

@@ -1,5 +1,5 @@
 # zip up the provided Javascript code to deploy to Lambda
-data "archive_file" "resource_zips" {
+data "archive_file" "lambda_zips" {
   count = "${length(var.names)}"
 
   type        = "zip"
@@ -8,15 +8,15 @@ data "archive_file" "resource_zips" {
 }
 
 # create a new Lambda function from the zipped file created above
-resource "aws_lambda_function" "protectedresources" {
+resource "aws_lambda_function" "lambdas" {
   count = "${length(var.names)}"
 
-  filename         = "${element(var.names, count.index)}.js.zip"
+  filename         = "${element(data.archive_file.lambda_zips.*.output_path, count.index)}"
   function_name    = "${element(var.names, count.index)}"
-  role             = "${element(aws_iam_role.protectedresource_lambdaroles.*.arn, count.index)}"
+  role             = "${element(aws_iam_role.apigw_lambda_roles.*.arn, count.index)}"
   handler          = "${element(var.names, count.index)}.handler"
   runtime          = "nodejs6.10"
-  source_code_hash = "${base64sha256(file(element(data.archive_file.resource_zips.*.output_path, count.index)))}"
+  source_code_hash = "${base64sha256(file(element(data.archive_file.lambda_zips.*.output_path, count.index)))}"
 
   environment {
     variables = "${var.environment_variables}"
@@ -24,17 +24,17 @@ resource "aws_lambda_function" "protectedresources" {
 }
 
 #  allow API Gateway to execute the Lambda functions
-resource "aws_lambda_permission" "protectedresource_apigw_lambda_permissions" {
+resource "aws_lambda_permission" "apigw_lambda_permissions" {
   count = "${length(var.names)}"
 
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = "${element(aws_lambda_function.protectedresources.*.arn, count.index)}"
+  function_name = "${element(aws_lambda_function.lambdas.*.arn, count.index)}"
   principal     = "apigateway.amazonaws.com"
 }
 
 # IAM role & policy for the Lambda function (allow it to write to CloudWatch)
-resource "aws_iam_role" "protectedresource_lambdaroles" {
+resource "aws_iam_role" "apigw_lambda_roles" {
   count = "${length(var.names)}"
 
   name = "${element(var.names, count.index)}_lambdarole"
@@ -56,11 +56,11 @@ resource "aws_iam_role" "protectedresource_lambdaroles" {
 EOF
 }
 
-resource "aws_iam_role_policy" "protectedresource_lambdarole_policies" {
+resource "aws_iam_role_policy" "apigw_lambda_role_policies" {
   count = "${length(var.names)}"
 
   name = "${element(var.names, count.index)}_lambdarole_policy"
-  role = "${element(aws_iam_role.protectedresource_lambdaroles.*.id, count.index)}"
+  role = "${element(aws_iam_role.apigw_lambda_roles.*.id, count.index)}"
 
   policy = <<EOF
 {
