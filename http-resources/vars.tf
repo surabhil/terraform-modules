@@ -1,4 +1,4 @@
-variable "aws_region" {}
+variable "region" {}
 
 variable "rest_api_id" {}
 

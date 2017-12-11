@@ -6,7 +6,7 @@ resource "aws_api_gateway_rest_api" "api" {
 module "http_resources" {
   source = "../http-resources"
 
-  aws_region = "${var.aws_region}"
+  aws_region = "${var.region}"
 
   rest_api_id = "${aws_api_gateway_rest_api.api.id}"
 
